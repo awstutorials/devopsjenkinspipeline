@@ -29,6 +29,13 @@ pipeline {
                 }
             }
         }
+        stage('Package') {
+            steps {
+                echo "-=- packaging project -=-"
+                sh "mvn package -DskipTests"
+                archiveArtifacts artifacts: 'target/*.war', fingerprint: true
+            }
+        }
         stage('Build Docker image') {
             steps {
                 echo "-=- build Docker image -=-"
