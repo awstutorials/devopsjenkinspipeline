@@ -29,5 +29,11 @@ pipeline {
                 }
             }
         }
+        stage('Build Docker image') {
+            steps {
+                echo "-=- build Docker image -=-"
+                sh "mvn docker:build"
+            }
+        }
     }
 }
