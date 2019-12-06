@@ -36,5 +36,13 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*.war', fingerprint: true
             }
         }
+
+         stage('Run Docker image') {
+            steps {
+                echo "-=- run Docker image -=-"
+                echo "${PATH}"
+                sh "docker run --name ${TEST_CONTAINER_NAME} --detach --rm --network ci --expose 6300 --env JAVA_OPTS='-javaagent:/usr/local/tomcat/jacocoagent.jar=output=tcpserver,address=*,port=6300' in28min/todo-web-application-h2:0.0.1-SNAPSHOT"
+            }
+        }
     }
 }
