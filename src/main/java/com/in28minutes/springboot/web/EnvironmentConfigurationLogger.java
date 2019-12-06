@@ -18,16 +18,17 @@ public class EnvironmentConfigurationLogger {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EnvironmentConfigurationLogger.class);
 
+	@SuppressWarnings("rawtypes")
 	@EventListener
 	public void handleContextRefresh(ContextRefreshedEvent event) {
 		final Environment environment = event.getApplicationContext().getEnvironment();
-		LOGGER.info("====== Environment and configuration ======");
-		LOGGER.info("Active profiles: {}", Arrays.toString(environment.getActiveProfiles()));
+		LOGGER.debug("====== Environment and configuration ======");
+		LOGGER.debug("Active profiles: {}", Arrays.toString(environment.getActiveProfiles()));
 		final MutablePropertySources sources = ((AbstractEnvironment) environment).getPropertySources();
 		StreamSupport.stream(sources.spliterator(), false).filter(ps -> ps instanceof EnumerablePropertySource)
 				.map(ps -> ((EnumerablePropertySource) ps).getPropertyNames()).flatMap(Arrays::stream).distinct()
-				.forEach(prop -> LOGGER.info("{}", prop));// environment.getProperty(prop)
-		LOGGER.info("===========================================");
+				.forEach(prop -> LOGGER.debug("{}", prop));// environment.getProperty(prop)
+		LOGGER.debug("===========================================");
 	}
 
 }
