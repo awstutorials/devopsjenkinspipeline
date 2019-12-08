@@ -49,7 +49,10 @@ pipeline {
             steps {
                 echo "-=- run Docker image -=-"
                 echo "${PATH}"
-                sh "mvn failsafe:integration-test failsafe:verify"
+                sh "mvn failsafe:integration-test failsafe:verify -DargLine=\"-Dtest.selenium.hub.url=http://selenium-hub:4444/wd/hub -Dtest.target.server.url=http://${TEST_CONTAINER_NAME}:8080/${APP_CONTEXT_ROOT}\""
+                sh "java -jar target/dependency/jacococli.jar dump --address ${TEST_CONTAINER_NAME} --port 6300 --destfile target/jacoco-it.exec"
+                junit 'target/failsafe-reports/*.xml'
+                step( [ $class: 'JacocoPublisher' ] )
             }
         }
     }
