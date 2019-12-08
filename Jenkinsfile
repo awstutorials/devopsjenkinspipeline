@@ -41,7 +41,15 @@ pipeline {
             steps {
                 echo "-=- run Docker image -=-"
                 echo "${PATH}"
-                sh "docker run --name ${TEST_CONTAINER_NAME} --detach --rm --network ci --expose 6300 --env JAVA_OPTS='-javaagent:/usr/local/tomcat/jacocoagent.jar=output=tcpserver,address=*,port=6300' in28min/todo-web-application-h2:0.0.1-SNAPSHOT"
+                sh "docker run --name ${TEST_CONTAINER_NAME} --detach --rm --network ci --expose 8081 --env JAVA_OPTS='-javaagent:/usr/local/tomcat/jacocoagent.jar=output=tcpserver,address=*,port=8000' in28min/todo-web-application-h2:0.0.1-SNAPSHOT"
+            }
+        }
+
+        stage('Run Integration Test image') {
+            steps {
+                echo "-=- run Docker image -=-"
+                echo "${PATH}"
+                sh "mvn failsafe:integration-test failsafe:verify"
             }
         }
     }
