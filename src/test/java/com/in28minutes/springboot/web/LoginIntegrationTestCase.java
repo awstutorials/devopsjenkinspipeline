@@ -17,6 +17,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -30,35 +31,17 @@ public class LoginIntegrationTestCase
     private static final Logger logger = LoggerFactory.getLogger(LoginIntegrationTestCase.class);
 
     @Test
-    public void testFirefox() throws MalformedURLException, IOException {
+    public void testHtmlUnit()
+            throws MalformedURLException, IOException {
 
-        //Assume.assumeTrue(RUN_FIREFOX);
+        Assume.assumeTrue(RUN_HTMLUNIT);
 
-        logger.info("executing test in firefox");
-
-        WebDriver driver = null;
-        try {
-            Capabilities browser = new FirefoxOptions();
-            driver = new RemoteWebDriver(new URL(SELENIUM_HUB_URL), browser);
-            testNewPetFirstVisit(driver, TARGET_SERVER_URL);
-        } finally {
-            if (driver != null) {
-                driver.quit();
-            }
-        }
-    }
-
-    @Test
-    public void testChrome() throws MalformedURLException, IOException {
-
-        //Assume.assumeTrue(RUN_CHROME);
-
-        logger.info("executing test in chrome");
+        logger.info("executing test in htmlunit");
 
         WebDriver driver = null;
+
         try {
-            Capabilities browser = new ChromeOptions();
-            driver = new RemoteWebDriver(new URL(SELENIUM_HUB_URL), browser);
+            driver = new HtmlUnitDriver(true);
             testNewPetFirstVisit(driver, TARGET_SERVER_URL);
         } finally {
             if (driver != null) {
