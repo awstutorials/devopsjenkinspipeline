@@ -37,6 +37,19 @@ pipeline {
             }
         }
 
+        stage('run') {
+        script {
+            docker.image('in28min/todo-web-application-h2:0.0.1-SNAPSHOT').withRun('-p 8081:8081') { c ->
+                    /* Wait until mysql service is up */
+                    sh 'while ! curl http://localhost:8081 --silent; do sleep 1; done'
+                    /* Run some tests which require MySQL */
+                    sh 'make check'
+            }
+            }
+        }
+
+
+
          stage('Run Docker image') {
             steps {
                 echo "-=- run Docker image -=-"
