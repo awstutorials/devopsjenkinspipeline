@@ -24,7 +24,7 @@ public class HelloWorldSteps {
 
     @Given("^A String name (.*)$")
     public void givenInput(String name) {
-        System.setProperty("webdriver.chrome.driver", "/Users/ravishankar/28minutes/devops/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver");
         WebDriver driver = new ChromeDriver();
         try {
             WebDriverWait wait = new WebDriverWait(driver, 10);
