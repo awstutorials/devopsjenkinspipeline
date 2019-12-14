@@ -40,11 +40,11 @@ pipeline {
         stage('run') {
         steps {
         script {
-            docker.image('in28min/todo-web-application-h2:0.0.1-SNAPSHOT').withRun('-p 8081:8081') { c ->
+            docker.image('in28min/todo-web-application-h2:0.0.1-SNAPSHOT').withRun('-p 8000:8080') { c ->
                     /* Wait until mysql service is up */
-                    sh 'while ! curl http://localhost:8081 --silent; do sleep 1; done'
+                    sh 'while ! curl http://localhost:8000 --silent; do sleep 1; done'
                     /* Run some tests which require MySQL */
-                    sh 'make check'
+                    sh 'mvn test'
             }
             }
             }
