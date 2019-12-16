@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: helloworld-restapi-h2-2
+  name: helloworld-restapi-h2-2
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: helloworld-restapi-h2-2
+    spec:
+      containers:
+        image: in28min/todo-web-application-h2:0.0.1-SNAPSHOT
+        name: helloworld-restapi-h2-2
+        ports:
+        - containerPort: 8080
+        resources: {}
+      restartPolicy: Always
+status: {}
