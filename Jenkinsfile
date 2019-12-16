@@ -11,6 +11,10 @@ pipeline {
         APP_CONTEXT_ROOT = "petclinic"
         TEST_CONTAINER_NAME = "ci-${APP_NAME}-${BUILD_NUMBER}"
         DOCKER_HUB = credentials("${ORG_NAME}-docker-hub")
+        PROJECT_ID = 'devopsproject-262110'
+        CLUSTER_NAME = 'standard-cluster-1'
+        LOCATION = 'europe-west1'
+        CREDENTIALS_ID = '<YOUR_CREDENTIAS_ID>'
     }  
     stages {
         stage('Build') {
@@ -36,6 +40,19 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*.war', fingerprint: true
             }
         }
+
+        stage('Deploy to GKE') {
+                    steps{
+                        step([
+                        $class: 'KubernetesEngineBuilder',
+                        projectId: env.PROJECT_ID,
+                        clusterName: env.CLUSTER_NAME,
+                        location: env.LOCATION,
+                        manifestPattern: 'manifest.yaml',
+                        credentialsId: env.CREDENTIALS_ID,
+                        verifyDeployments: true])
+                    }
+                }
 
         stage('run') {
         steps {
