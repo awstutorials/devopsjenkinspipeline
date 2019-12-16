@@ -14,7 +14,7 @@ pipeline {
         PROJECT_ID = 'devopsproject-262110'
         CLUSTER_NAME = 'standard-cluster-1'
         LOCATION = 'europe-west1'
-        CREDENTIALS_ID = '<YOUR_CREDENTIAS_ID>'
+        CREDENTIALS_ID = 'devopsproject-262110'
     }  
     stages {
         stage('Build') {
