@@ -17,12 +17,24 @@ pipeline {
         CREDENTIALS_ID = 'devopsproject-262110'
     }  
     stages {
+        agent {
+                docker {
+                    image 'maven:3-alpine'
+                    args '-v /root/.m2:/root/.m2 --network ci -v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
         stage('Build') {
             steps {
                 sh 'mvn clean compile'
             }
         }
         stage('Test') {
+        agent {
+                docker {
+                    image 'maven:3-alpine'
+                    args '-v /root/.m2:/root/.m2 --network ci -v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
             steps {
                 sh 'mvn test'
             }
@@ -34,6 +46,12 @@ pipeline {
             }
         }
         stage('Package') {
+        agent {
+                docker {
+                    image 'maven:3-alpine'
+                    args '-v /root/.m2:/root/.m2 --network ci -v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
             steps {
                 echo "-=- packaging project -=-"
                 sh "mvn package -DskipTests"
@@ -42,7 +60,40 @@ pipeline {
         }
 
         stage('Deploy to GKE') {
+        agent {
+            kubernetes {
+              label 'sample-app'
+              defaultContainer 'jnlp'
+              yaml """
+        apiVersion: v1
+        kind: Pod
+        metadata:
+        labels:
+          component: ci
+        spec:
+          # Use service account that can deploy to all namespaces
+          serviceAccountName: cd-jenkins
+          containers:
+          - name: golang
+            image: golang:1.10
+            command:
+            - cat
+            tty: true
+          - name: gcloud
+            image: gcr.io/cloud-builders/gcloud
+            command:
+            - cat
+            tty: true
+          - name: kubectl
+            image: gcr.io/cloud-builders/kubectl
+            command:
+            - cat
+            tty: true
+        """
+        }
+          }
                     steps{
+                    container('kubectl') {
                         step([
                         $class: 'KubernetesEngineBuilder',
                         projectId: env.PROJECT_ID,
@@ -51,6 +102,7 @@ pipeline {
                         manifestPattern: 'manifest.yaml',
                         credentialsId: env.CREDENTIALS_ID,
                         verifyDeployments: true])
+                        }
                     }
                 }
 
